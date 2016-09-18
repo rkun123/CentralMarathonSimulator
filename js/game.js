@@ -19,6 +19,7 @@ window.onload = function () {
         var titleScene = new Scene();
         var playScene = new Scene();//ゲーム画面作成
         var overScene = new Scene();
+        var endScene = new Scene();
         playScene.backgroundColor = "hsla(200,100%,85%,1)";//背景を空の色に
 
         var nowSpeed = 0;//スピード制御用変数作成
@@ -88,7 +89,7 @@ window.onload = function () {
                 }
                 bg_1.x += nowSpeed;
                 bg_2.x=bg_1.x - game.width;
-                ito.x = bg_1.x-64;
+                ito.x = bg_1.x-60;
                 unko.x = bg_1.x;
                 lock.x = bg_1.x;
 
@@ -104,6 +105,7 @@ window.onload = function () {
                 if(player.within(ito,withinpx) && itoState){
                     Stamina += scoreMap[2];
                     console.log("Stamina:"+Stamina);
+                    console.log("あたった");
                     itoState = false;
                     player.tl.moveBy(0, -120, 5, enchant.Easing.CUBIC_EASEOUT).moveBy(0, 120, 5, enchant.Easing.CUBIC_EASEIN);
                 }else if(player.within(lock,withinpx) && lockState){
@@ -125,7 +127,9 @@ window.onload = function () {
                 //ゲームオーバー判定
                 if(Stamina <= 0){
                     gameover();
-
+                }
+                if(picCount == 44){
+                  end();
                 }
 
             }
@@ -134,7 +138,6 @@ window.onload = function () {
 
         //スプライト作成
         function generateSprite(_x,_y,_width,_height,_image,_frame,_scale){
-            //generateSprite(x,y,width,height,image,frame,scale)
             var sprite = new Sprite(_width,_height);
             sprite.image = game.assets[_image];
             sprite.x = _x;sprite.y = _y;
@@ -174,24 +177,14 @@ window.onload = function () {
 
         //障害物出現関数
         function checkObstacle(picCount){
-            /*if(Idata.indexOf(picCount)>=0){
-                console.log("伊藤");
-                playScene.addChild(ito);
-                itoState = true;
-            }else{
-                    playScene.removeChild(ito);
-            }*/
-
             if(Idata.indexOf(picCount)>=0){
-                console.log("伊藤");
-                //lock = generateSprite(-64,260-64,64,64,lockimg,1,1);
-                playScene.addChild(ito);
-                itoState = true;
-            }else{
-                    playScene.removeChild(ito);
-
+              console.log("伊藤");
+              playScene.addChild(ito);
+              itoState = true;
+            }else {
+              playScene.removeChild(ito);
+              itoState = false;
             }
-
             if(Ldata.indexOf(picCount)>=0){
                 console.log("石");
                 //lock = generateSprite(-64,260-64,64,64,lockimg,1,1);
@@ -199,7 +192,7 @@ window.onload = function () {
                 lockState = true;
             }else{
                     playScene.removeChild(lock);
-
+                    lockState = false;
             }
 
             if(Udata.indexOf(picCount)>=0){
@@ -226,8 +219,8 @@ window.onload = function () {
             playScene.addChild(player);
 
 
-            //ito = generateSprite(-160,140,160,160,itoimg,[1,1,1,1,2,2,2,2],0.5);//伊藤先生スプライト作成
-            ito = generateSprite(-64,260-64,64,64,lockimg,1,1);
+            ito = generateSprite(0,140,160,160,itoimg,[1,1,1,1,2,2,2,2],0.5);//伊藤先生スプライト作成
+            //ito = generateSprite(-64,260-64,64,64,lockimg,1,1);
             lock = generateSprite(-64,260-64,64,64,lockimg,1,1);//石スプライト作成
             unko = generateSprite(-64,260-64,64,64,unkoimg,1,1);//うんこスプライト作成
             //流れる草の一個目作成
@@ -300,8 +293,21 @@ window.onload = function () {
             results.x = game.width/2-results.width/2;
             overScene.addChild(results);
             game.pushScene(overScene);
-            //ランキング送信
-            send();
+        }
+        function end(){
+          console.log("GameOver!!");
+          gameTrueFlag = false;
+          r_time = nowTime;
+          r_stamina = Stamina;
+          endScene.backgroundColor =  "#FFFFFF"
+          var msg = new Label("Finish!!");
+          msg.x = game.width/2 - msg.width/2;
+          var results = new Label(r_name+"-"+r_time+"-"+r_stamina);
+          results.x = game.width/2-results.width/2;
+          endScene.addChild(results);
+          game.pushScene(endScene);
+          //ランキング送信
+          send();
         }
 
 
