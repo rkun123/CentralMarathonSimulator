@@ -15,7 +15,7 @@ window.onload = function () {
     game.preload(grass1,sky1,itoimg,kawimg,unkoimg,lockimg,'imgs/chara0.png');
     game.fps = 30;
     game.onload = function () {
-        
+
         var titleScene = new Scene();
         var playScene = new Scene();//ゲーム画面作成
         var overScene = new Scene();
@@ -44,12 +44,12 @@ window.onload = function () {
         //結果用変数
         var r_time,r_stamina,r_name;
 
-        
+
         makeTitleDisp();
         makeDisp();
 
         //フレーム毎に呼ばれるリスナーを設定
-        
+
         game.addEventListener("enterframe",newFrame);
 
 
@@ -100,7 +100,7 @@ window.onload = function () {
                     checkObstacle(picCount);
                 }
                 //当たり判定
-                
+
                 if(player.within(ito,withinpx) && itoState){
                     Stamina += scoreMap[2];
                     console.log("Stamina:"+Stamina);
@@ -117,15 +117,15 @@ window.onload = function () {
                     unkoState = false;
                     player.tl.moveBy(0, -120, 5, enchant.Easing.CUBIC_EASEOUT).moveBy(0, 120, 5, enchant.Easing.CUBIC_EASEIN);
                 }else{
-                    
+
                 }
-                
+
                 staminaLabel.text = "stamina is "+Stamina;
 
                 //ゲームオーバー判定
                 if(Stamina <= 0){
                     gameover();
-                    
+
                 }
 
             }
@@ -143,13 +143,13 @@ window.onload = function () {
             sprite.scaleY = _scale;
             return sprite;
         }
-        
-        
 
 
-        
 
-        
+
+
+
+
         //加速
         function speedUp(){
             //スピードアップ
@@ -174,12 +174,22 @@ window.onload = function () {
 
         //障害物出現関数
         function checkObstacle(picCount){
-            if(Idata.indexOf(picCount)>=0){
+            /*if(Idata.indexOf(picCount)>=0){
                 console.log("伊藤");
                 playScene.addChild(ito);
                 itoState = true;
             }else{
                     playScene.removeChild(ito);
+            }*/
+
+            if(Idata.indexOf(picCount)>=0){
+                console.log("伊藤");
+                //lock = generateSprite(-64,260-64,64,64,lockimg,1,1);
+                playScene.addChild(ito);
+                itoState = true;
+            }else{
+                    playScene.removeChild(ito);
+
             }
 
             if(Ldata.indexOf(picCount)>=0){
@@ -189,7 +199,7 @@ window.onload = function () {
                 lockState = true;
             }else{
                     playScene.removeChild(lock);
-                    
+
             }
 
             if(Udata.indexOf(picCount)>=0){
@@ -207,44 +217,24 @@ window.onload = function () {
             //動かない空を作成
             bg = new Sprite(320,320);
             bg.image = game.assets[sky1];
-            
+
             bg = generateSprite(0,0,320,320,sky1,1,1)
             playScene.addChild(bg);
             //かわみん画像スプライト作成
-            /*player = new Sprite(64,64);
-            player.image = game.assets[kawimg];
-            player.frame = [1,1,1,2,2,2,3,3,3,2,2,2];
-            //player.scaleX = 2;player.scaleY = 2;
-            player.y = 257-80;player.x = 320-64;*/
             player = generateSprite(320-64,257-64,64,64,kawimg,[1,1,1,2,2,2,3,3,3,2,2,2],1);
             console.log(player);
             playScene.addChild(player);
 
-            //伊藤先生スプライト作成
-            /*
-            ito = new Sprite(160,160);
-            ito.image = game.assets[itoimg];
-            ito.frame = [1,1,1,1,2,2,2,2];
-            ito.scaleX = 0.5;ito.scaleY = 0.5;
-            ito.y = 260-120;*/
-            //playScene.addChild(ito);
-            ito = generateSprite(-160,140,160,160,itoimg,[1,1,1,1,2,2,2,2],0.5);
-            lock = generateSprite(-64,260-64,64,64,lockimg,1,1);
-            unko = generateSprite(-64,260-64,64,64,unkoimg,1,1);
+
+            //ito = generateSprite(-160,140,160,160,itoimg,[1,1,1,1,2,2,2,2],0.5);//伊藤先生スプライト作成
+            ito = generateSprite(-64,260-64,64,64,lockimg,1,1);
+            lock = generateSprite(-64,260-64,64,64,lockimg,1,1);//石スプライト作成
+            unko = generateSprite(-64,260-64,64,64,unkoimg,1,1);//うんこスプライト作成
             //流れる草の一個目作成
-            /*bg_1 = new Sprite(320,320);
-            bg_1.image = game.assets[grass1];
-            bg_1.y =320 - 75;
-            playScene.addChild(bg_1);
-            */
             bg_1 = generateSprite(0,320-75,320,320,grass1,1,1);
             playScene.addChild(bg_1);
+
             //同上二個目作成
-            /*bg_2 = new Sprite(320,320);
-            bg_2.image = game.assets[grass1];
-            bg_2.y =320 - 75;
-            playScene.addChild(bg_2);
-            */
             bg_2 = generateSprite(0,320-75,320,320,grass1,1,1);
             playScene.addChild(bg_2);
 
@@ -253,7 +243,7 @@ window.onload = function () {
             //label.moveTo(game.width/2,16);
             label.color = "red";
             playScene.addChild(label);
-            
+
             staminaLabel = new Label("stamina is 100");
             staminaLabel.x=20;
             label.color = "blue";
@@ -280,7 +270,7 @@ window.onload = function () {
             input.y = game.width/2;
             titleScene.addChild(input);
             game.pushScene(titleScene);
-            
+
             var button = new Entity();
             button._element = document.createElement("button");
             button.width = 50;button.height = 20;
@@ -296,7 +286,7 @@ window.onload = function () {
                 console.log("NickName:"+document.hoge.text.value);
             });
             //テキスト
-            
+
         }
 
         //ゲームオーバー
@@ -313,13 +303,13 @@ window.onload = function () {
             //ランキング送信
             send();
         }
- 
 
-    }   
+
+    }
     game.start();
 
 
 }
 function send(){
-    
+
 }
