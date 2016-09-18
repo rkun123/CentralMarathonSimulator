@@ -35,8 +35,9 @@ window.onload = function () {
         var lockState = false;
         var unkoState = false;
         var withinpx = 50;
-        var bg,player,bg_1,bg_2,label,staminaLabel,ito,unko,lock;//makeDisp関数に渡す変数
+        var bg,player,bg_1,bg_2,label,staminaLabel,ito,unko,lock,roadBar;//makeDisp関数に渡す変数
         var gameTrueFlag = true;
+        var dushCount = 0;
 
         var Ldata = [3,5,11,18,23,29,32,38,43];
         var Udata = [4,13,16,28,35,41];
@@ -76,13 +77,21 @@ window.onload = function () {
 
 
 
+
         //フレーム毎に呼ばれる
         function newFrame(){
                 if(gameTrueFlag){
                 nowTime = Math.floor((new Date().getTime() - startTime.getTime())/1000);
                 label.text = nowTime;
                 //console.log(Math.floor(nowTime/1000));
-                if(nowSpeed < 0){
+                if(game.input.d){
+                  nowSpeed = 15;
+                  dushCount += 1;
+                  if(dushCount >= 15){
+                    Stamina -= 1;
+                    dushCount = 0;
+                  }
+                }else if(nowSpeed < 0){
                     nowSpeed = 0;
                 }else if(nowSpeed > 5){
                     nowSpeed = 5;
@@ -92,6 +101,10 @@ window.onload = function () {
                 ito.x = bg_1.x-60;
                 unko.x = bg_1.x;
                 lock.x = bg_1.x;
+
+                var barLength = game.width/44*picCount;
+                roadBar.width = barLength;
+                roadBar.x = game.width - barLength;
 
                 //console.log(bg.x);
                 if(bg_1.x >= 320){
@@ -231,22 +244,29 @@ window.onload = function () {
             bg_2 = generateSprite(0,320-75,320,320,grass1,1,1);
             playScene.addChild(bg_2);
 
+            //距離プログレスバー
+            roadBar = new Sprite(game.width,10);
+            roadBar.backgroundColor = "#FF0000";
+            playScene.addChild(roadBar);
             //時間表示ラベル作成
             label = new Label("Hi");
             //label.moveTo(game.width/2,16);
             label.color = "red";
             playScene.addChild(label);
 
+            //スタミナ表示ラベル
             staminaLabel = new Label("stamina is 100");
             staminaLabel.x=20;
             label.color = "blue";
             playScene.addChild(staminaLabel);
+
 
             //game.pushScene(playScene);
 
             game.keybind(65,"a");//speedUp - a
             game.keybind(68,"b");//speedDown - d
             game.keybind(32,"c")//jump - space
+            game.keybind(66,"d")//dush - b
 
         }
 
