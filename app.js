@@ -9,8 +9,12 @@ var server = http.createServer(function (req,res) {
         var paras = url.parse(req.url,true);
         console.log(paras.query);
 
+        fs.readFile("./htmls"+req.url,function(err, data){
+            //if (err) throw err;
+            console.log(data);
+            res.setHeader("Content-Type", "text/html");
+            res.end(data);
+        });
 
-        res.setHeader("Content-Type", "text/html");
-        res.end(fs.readFileSync("./htmls"+req.url));
 });
 server.listen(3000);

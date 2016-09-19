@@ -308,9 +308,9 @@ window.onload = function () {
             gameTrueFlag = false;
             r_time = nowTime;
             r_stamina = Stamina;
-            overScene.backgroundColor =  "#FFFFFF"
-            var results = new Label(r_name+"-"+r_time+"-"+r_stamina);
-            results.x = game.width/2-results.width/2;
+            overScene.backgroundColor =  "#FF0000"
+            var results = new Label("name:"+r_name+",time:"+r_time+",stamina:"+r_stamina);
+            results.x = game.width/2-results._boundWidth/2;
             overScene.addChild(results);
             game.pushScene(overScene);
         }
@@ -322,8 +322,8 @@ window.onload = function () {
           endScene.backgroundColor =  "#FFFFFF"
           var msg = new Label("Finish!!");
           msg.x = game.width/2 - msg.width/2;
-          var results = new Label(r_name+"-"+r_time+"-"+r_stamina);
-          results.x = game.width/2-results.width/2;
+          var results = new Label("name:"+r_name+",time:"+r_time+",stamina:"+r_stamina);
+          results.x = game.width/2-results._boundWidth/2;
           endScene.addChild(results);
           game.pushScene(endScene);
           //ランキング送信
@@ -338,7 +338,7 @@ window.onload = function () {
 }
 function send(_name,_time,_stamina){
     var xhr = new XMLHttpRequest();
-    var serverURL = "127.0.0.1:3000";
+    var serverURL = "http://127.0.0.1:3000";
     var sendUrl = serverURL + "/?name="+_name+"&time="+_time+"&stamina="+_stamina;
     console.log(sendUrl);
     xhr.open("GET",sendUrl,true);
