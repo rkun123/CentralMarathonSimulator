@@ -327,7 +327,7 @@ window.onload = function () {
           endScene.addChild(results);
           game.pushScene(endScene);
           //ランキング送信
-          send();
+          send(r_name,r_time,r_stamina);
         }
 
 
@@ -336,6 +336,11 @@ window.onload = function () {
 
 
 }
-function send(){
-
+function send(_name,_time,_stamina){
+    var xhr = new XMLHttpRequest();
+    var serverURL = "127.0.0.1:3000";
+    var sendUrl = serverURL + "/?name="+_name+"&time="+_time+"&stamina="+_stamina;
+    console.log(sendUrl);
+    xhr.open("GET",sendUrl,true);
+    xhr.send();
 }
