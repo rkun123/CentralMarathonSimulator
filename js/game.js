@@ -65,19 +65,6 @@ window.onload = function () {
         game.on("bbuttondown",speedDown);
         game.on("cbuttondown",jump);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         //フレーム毎に呼ばれる
         function newFrame(){
                 if(gameTrueFlag){
@@ -159,12 +146,6 @@ window.onload = function () {
             sprite.scaleY = _scale;
             return sprite;
         }
-
-
-
-
-
-
 
         //加速
         function speedUp(){
@@ -327,14 +308,13 @@ window.onload = function () {
           endScene.addChild(results);
           game.pushScene(endScene);
           //ランキング送信
-          send();
+            send();
         }
 
 
+
     }
-    game.start();
-
-
+    game.start();//ゲーム開始
 }
 function send(){
 
