@@ -65,19 +65,6 @@ window.onload = function () {
         game.on("bbuttondown",speedDown);
         game.on("cbuttondown",jump);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         //フレーム毎に呼ばれる
         function newFrame(){
                 if(gameTrueFlag){
@@ -159,12 +146,6 @@ window.onload = function () {
             sprite.scaleY = _scale;
             return sprite;
         }
-
-
-
-
-
-
 
         //加速
         function speedUp(){
@@ -333,10 +314,9 @@ window.onload = function () {
         }
 
 
+
     }
-    game.start();
-
-
+    game.start();//ゲーム開始
 }
 function send(_name,_time,_stamina){
     var xhr = new XMLHttpRequest();
