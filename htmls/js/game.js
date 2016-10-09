@@ -311,6 +311,8 @@ window.onload = function () {
             overScene.backgroundColor =  "#FF0000"
             var results = new Label("name:"+r_name+",time:"+r_time+",stamina:"+r_stamina);
             results.x = game.width/2-results._boundWidth/2;
+
+            send(r_name,r_time,r_stamina);
             overScene.addChild(results);
             game.pushScene(overScene);
         }
@@ -338,8 +340,8 @@ window.onload = function () {
 }
 function send(_name,_time,_stamina){
     var xhr = new XMLHttpRequest();
-    var serverURL = "http://127.0.0.1:3000";
-    var sendUrl = serverURL + "/?name="+_name+"&time="+_time+"&stamina="+_stamina;
+    var serverURL = "/regist";
+    var sendUrl = serverURL + "?name="+_name+"&time="+_time+"&stamina="+_stamina;
     console.log(sendUrl);
     xhr.open("GET",sendUrl,true);
     xhr.send();

@@ -1,0 +1,15 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <script>
+            function send(){
+                var xhr = new XMLHttpRequest();
+                var url = "/regist?foo=なあ";
+                xhr.open("GET",url);
+                xhr.send();
+            }
+        </script>
+        <h1 onclick="send()">SEND</h1>
+    </body>
+</html>
