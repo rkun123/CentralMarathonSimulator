@@ -10,9 +10,13 @@ window.onload = function () {
     var kawimg = 'imgs/kawimg.png';
     var lockimg = 'imgs/Lock.png';
     var unkoimg = 'imgs/Unko.png';
+    var titleBG = 'imgs/start.gif';
+    var overBG = 'imgs/gameover.gif';
+    var goalBG = 'imgs/goal.gif';
+    var startBGsp,overBGsp,goalBGsp;
 
 
-    game.preload(grass1,sky1,itoimg,kawimg,unkoimg,lockimg,'imgs/chara0.png');
+    game.preload(grass1,sky1,itoimg,kawimg,unkoimg,lockimg,titleBG,overBG,goalBG);
     game.fps = 30;
     game.onload = function () {
 
@@ -24,7 +28,7 @@ window.onload = function () {
 
         var nowSpeed = 0;//スピード制御用変数作成
         var speedStep = 0.5;
-        var startTime = new Date();
+        var startTime;
         //console.log(startTime.getTime());
         var nowTime;
         var picCount = 0;
@@ -44,7 +48,7 @@ window.onload = function () {
         var Idata = [2,12,25,40];
 
         //結果用変数
-        var r_time,r_stamina,r_name;
+        var r_time,r_stamina,r_name,r_point;
 
 
         makeTitleDisp();
@@ -68,7 +72,7 @@ window.onload = function () {
         //フレーム毎に呼ばれる
         function newFrame(){
                 if(gameTrueFlag){
-                nowTime = Math.floor((new Date().getTime() - startTime.getTime())/1000);
+                nowTime = 50 - Math.floor((new Date().getTime() - startTime.getTime())/1000);
                 label.text = nowTime;
                 //console.log(Math.floor(nowTime/1000));
                 if(game.input.d){
@@ -124,12 +128,23 @@ window.onload = function () {
 
                 staminaLabel.text = "stamina is "+Stamina;
 
-                //ゲームオーバー判定
+
+
+                //ゲームオーバー判定（スタミナ切れ）
                 if(Stamina <= 0){
+                    Stamina = 0;//スタミナがマイナスになるのを回避
+                    r_point = Stamina+50-nowTime;//ポイント計算
                     gameover();
                 }
+                //ゲームオーバー判定（時間切れ）
+                if(nowTime <= 0){
+                    r_point = Stamina+50-nowTime;//ポイント計算
+                    gameover();
+                }
+                //ゴール判定
                 if(picCount == 44){
-                  end();
+                    r_point = Stamina+nowTime*2+50;//ポイント計算
+                    end();
                 }
 
             }
@@ -241,6 +256,9 @@ window.onload = function () {
             label.color = "blue";
             playScene.addChild(staminaLabel);
 
+            //時間計測開始
+            startTime = new Date();
+
 
             //game.pushScene(playScene);
 
@@ -256,6 +274,12 @@ window.onload = function () {
             //タイトル
             /*var title = new Label("<form name='hoge'>" +"<input type='text' name='text'>" +"</from>");
             titleScene.addChild(title);*/
+
+            var bg = new Sprite(320,320);
+            bg.image = game.assets[titleBG];
+            titleScene.addChild(bg);
+
+            //textbox作成
             var input = new Entity();
             input._element = document.createElement('div');
             input.width = 320;
@@ -265,6 +289,7 @@ window.onload = function () {
             titleScene.addChild(input);
             game.pushScene(titleScene);
 
+            //ボタン作成
             var button = new Entity();
             button._element = document.createElement("button");
             button.width = 50;button.height = 20;
@@ -278,39 +303,55 @@ window.onload = function () {
                 game.pushScene(playScene);
                 r_name = document.hoge.text.value;
                 console.log("NickName:"+document.hoge.text.value);
+                //時間計測開始
+                startTime = new Date();
             });
             //テキスト
+
 
         }
 
         //ゲームオーバー
         function gameover(){
+
+            overBGsp = new Sprite(320,320);
+            overBGsp.image = game.assets[overBG];
+            overScene.addChild(overBGsp);
+
             console.log("GameOver!!");
             gameTrueFlag = false;
             r_time = nowTime;
             r_stamina = Stamina;
-            overScene.backgroundColor =  "#FF0000"
-            var results = new Label("name:"+r_name+",time:"+r_time+",stamina:"+r_stamina);
+            r_point *= 0.5;
+            //overScene.backgroundColor =  "#FF0000"
+            var results = new Label("name:"+r_name+", time:"+r_time+", stamina:"+r_stamina+", point:"+r_point);
             results.x = game.width/2-results._boundWidth/2;
-
-            send(r_name,r_time,r_stamina);
+            results.y = 200;
+            send(r_name,r_time,r_stamina,r_point);
             overScene.addChild(results);
             game.pushScene(overScene);
         }
         function end(){
+            //ゴール
+            goalBGsp = new Sprite(320,320);
+            goalBGsp.image = game.assets[goalBG];
+            endScene.addChild(goalBGsp);
+
           console.log("GameOver!!");
           gameTrueFlag = false;
           r_time = nowTime;
           r_stamina = Stamina;
-          endScene.backgroundColor =  "#FFFFFF"
-          var msg = new Label("Finish!!");
-          msg.x = game.width/2 - msg.width/2;
-          var results = new Label("name:"+r_name+",time:"+r_time+",stamina:"+r_stamina);
+          //endScene.backgroundColor =  "#FFFFFF"
+          var results = new Label("name:"+r_name+", time:"+r_time+", stamina:"+r_stamina+", point:"+r_point);
           results.x = game.width/2-results._boundWidth/2;
+          results.y = 200;
           endScene.addChild(results);
           game.pushScene(endScene);
+
+
+
           //ランキング送信
-          send(r_name,r_time,r_stamina);
+          send(r_name,r_time,r_stamina,r_point);
         }
 
 
@@ -318,10 +359,10 @@ window.onload = function () {
     }
     game.start();//ゲーム開始
 }
-function send(_name,_time,_stamina){
+function send(_name,_time,_stamina,_point){
     var xhr = new XMLHttpRequest();
     var serverURL = "/regist";
-    var sendUrl = serverURL + "?name="+_name+"&time="+_time+"&stamina="+_stamina;
+    var sendUrl = serverURL + "?name="+_name+"&time="+_time+"&stamina="+_stamina+"&point="+_point;
     console.log(sendUrl);
     xhr.open("GET",sendUrl,true);
     xhr.send();
